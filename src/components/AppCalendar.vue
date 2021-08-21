@@ -1,7 +1,15 @@
 <template>
   <div class="calendar-main">
     <app-calendar-header></app-calendar-header>
-    <app-date :month="month" @next="next" @prev='prev'></app-date>
+    <app-date
+      :value="value"
+      @next="next"
+      @prev="prev"
+      @today="today"
+    ></app-date>
+    <div class="days">
+      <div class="days__day" v-for="day in days" :key="day">{{ day }}</div>
+    </div>
     <div class="calendar">
       <div
         v-for="(day, index) in calendar"
@@ -10,10 +18,7 @@
         :class="[weeksDays(day)]"
       >
         <div class="calendar__wrapper">
-          <span
-            class="calendar__day"
-            :class="[currentDay(day) ? 'today' : '']"
-          >
+          <span class="calendar__day" :class="[currentDay(day) ? 'today' : '']">
             {{ day.format("D") }}
           </span>
           <span class="calendar__day-month" v-if="mon">{{ mon }}</span>
@@ -40,13 +45,10 @@ export default {
       calendar: [],
       mon: null,
       styleBefore: "",
-      month : moment(),
-      
     };
   },
   mounted() {
     this.calendarCreate(this.value);
-    
   },
   methods: {
     calendarCreate(value) {
@@ -61,19 +63,21 @@ export default {
     },
 
     next() {
-      this.month.add(1, 'month');
       this.calendarCreate(this.value.add(1, "month"));
     },
-    prev(){
-      this.month.subtract(1, 'month');
+    today() {
+      this.value = moment();
+      this.calendarCreate(this.value);
+    },
+    prev() {
       this.calendarCreate(this.value.subtract(1, "month"));
     },
-    currentDay(day){
-      return moment().isSame(day, 'day')
+    currentDay(day) {
+      return moment().isSame(day, "day");
     },
-    weeksDays(day){
-      return day.day() === 6 || day.day() === 0 ? 'weekends': ''
-    }
+    weeksDays(day) {
+      return day.day() === 6 || day.day() === 0 ? "weekends" : "";
+    },
   },
   components: { AppCalendarHeader, appDate },
 };
@@ -82,6 +86,17 @@ export default {
 <style lang='scss'>
 .weekends {
   background-color: #272829;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  justify-items: end;
+  margin-bottom: 5px;
+  &__day {
+    color: white;
+    font-size: 20px;
+  }
 }
 .calendar-main {
   width: 100%;

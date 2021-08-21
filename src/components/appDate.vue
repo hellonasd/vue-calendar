@@ -2,12 +2,12 @@
   <div class="date">
     <div class="date__wrapper">
       <div class="date__calendar">
-        <h3 class="date__year">{{ month.format("MMMM") }}</h3>
-        <span class="date__number">{{ month.format("YYYY") }}</span>
+        <h3 class="date__year">{{ value.format("MMMM") }}</h3>
+        <span class="date__number">{{ value.format("YYYY") }}</span>
       </div>
       <div class="date__navigation">
         <button class="date__arrow-left" @click="prev">&lt;</button>
-        <button class="date__today">Today</button>
+        <button class="date__today" @click='today'>Today</button>
         <button class="date__arrow-right" @click="next">&gt;</button>
       </div>
     </div>
@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  props: ["month"],
+  props: ["value"],
   methods : {
     next(){
       this.$emit('next');
@@ -24,6 +24,10 @@ export default {
     },
     prev(){
       this.$emit('prev'),
+      this.$forceUpdate();
+    },
+    today(){
+      this.$emit('today');
       this.$forceUpdate();
     }
   }
